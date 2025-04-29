@@ -70,11 +70,11 @@ This roadmap outlines a potential path. Tasks can be moved between phases based 
     * `[x]` Generate a simple text description based on a selected idea. (GPT-4o-mini powered, working)
 * `[x]` **Implement `CriticAgent` (Basic):**
     * `[x]` Provide exceptionally constructive, actionable positive/negative feedback and concrete suggestions on the prototype description.
-* `[ ]` **Add Post-Critique Interactive Loop:**
-    * `[ ]` After critique, let the user choose to iterate, pick a new idea/prototype, restart, or exit—never get stuck at the end.
-* `[ ]` **Define Basic `Tasks`:** Create corresponding CrewAI tasks for the above agents.
-* `[ ]` **Implement Sequential Workflow:** Enable basic chaining like `modes=[idea_jam → prototype → critic]`.
-* `[ ]` Handle basic user input for the initial topic/prompt.
+* `[x]` **Add Post-Critique Interactive Loop:**
+    * `[x]` After critique, let the user choose to iterate, pick a new idea/prototype, restart, exit, or save as a project brief—never get stuck at the end.
+* `[x]` **Define Basic `Tasks`:** Create corresponding CrewAI tasks for the above agents.
+* `[x]` **Implement Sequential Workflow:** Enable basic chaining like `modes=[idea_jam → prototype → critic]`.
+* `[x]` Handle basic user input for the initial topic/prompt.
 
 ---
 

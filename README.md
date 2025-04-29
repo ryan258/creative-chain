@@ -33,6 +33,29 @@ The goal is to provide a focused, efficient partner that helps you overcome crea
 * **LLM:** Configurable - Requires an API key for an LLM provider (e.g., OpenAI GPT-4/GPT-4o, Anthropic Claude 3, Groq Llama3, Google Gemini). Configure in your `.env` file.
 * **(Optional) Tools:** May integrate specific CrewAI tools (e.g., SerperDevTool for web search).
 
+## Sequential Workflow & Mode Chaining
+
+SOLO-IDEAFLOW-OS supports chaining multiple workflow modes for streamlined, multi-step creative sessions. You can specify a sequence of modes to be executed in order, such as:
+
+```
+modes=[idea_jam → prototype → critic]
+```
+
+This will:
+1. Generate creative ideas from your prompt (idea_jam)
+2. Prototype the selected idea (prototype)
+3. Critique the resulting prototype (critic)
+
+**Example Usage:**
+
+- To generate and evaluate concepts for a collapsible windsurf sail:
+  ```
+  modes=[idea_jam → prototype → critic] | Generate and evaluate concepts for a collapsible windsurf sail.
+  ```
+  The system will walk you through idea generation, prototyping, and critique in sequence, minimizing manual input.
+
+You can also specify a single mode (e.g., `mode=prototype`) for focused tasks, or use the interactive menu to pick your next step at each stage.
+
 ## Getting Started
 
 ### Prerequisites
