@@ -1,10 +1,11 @@
 # agents.py - CrewAI agent stubs
 
 class IdeaJamAgent:
-    def __init__(self):
-        pass
-    def generate_ideas(self, topic):
-        return ["Idea 1", "Idea 2", "Idea 3"]
+    def __init__(self, num_ideas=5):
+        self.num_ideas = num_ideas
+    def generate_ideas(self, topic, num_ideas=None):
+        n = num_ideas if num_ideas is not None else self.num_ideas
+        return [f"Idea {i+1} for {topic}" for i in range(n)]
 
 class PrototypeAgent:
     def __init__(self):

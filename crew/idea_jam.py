@@ -10,17 +10,35 @@ class InteractiveIdeaJamToPrototypeCrew:
         self.client = OpenAI(api_key=self.api_key)
 
     def run(self, user_input):
+        # Check for "num_ideas=" in the user_input (e.g., "num_ideas=7 | Generate ideas for X")
+        import re
+        num_ideas = 40
+        topic = user_input
+        match = re.search(r"num_ideas\s*=\s*(\d+)", user_input)
+        if match:
+            num_ideas = int(match.group(1))
+            # Remove num_ideas=... from topic string
+            topic = re.sub(r"num_ideas\s*=\s*\d+\s*\|?", "", user_input).strip()
+        else:
+            # Ask interactively if not specified
+            try:
+                num_ideas_in = input(f"How many ideas would you like to generate? (Enter for default {num_ideas}): ").strip()
+                if num_ideas_in:
+                    num_ideas = int(num_ideas_in)
+            except Exception:
+                pass
         prompt = (
             "You are a creative brainstorming assistant. "
-            "Generate 5 unique, fun, and imaginative ideas based on this topic: '" + user_input + "'. "
-            "For each idea, give a one-sentence summary. Number the ideas."
+            f"Generate exactly {num_ideas} unique, fun, and imaginative ideas based on this topic: '" + topic + "'. "
+            f"Number the ideas 1 to {num_ideas} with no skipped numbers. Do not stop until you have listed all {num_ideas} ideas. "
+            "For each idea, give a one-sentence summary."
         )
         try:
             response = self.client.chat.completions.create(
                 model=self.model,
                 messages=[{"role": "system", "content": "You are a helpful creative assistant."},
                          {"role": "user", "content": prompt}],
-                max_tokens=400,
+                max_tokens=2048,
                 temperature=0.9
             )
             ideas_text = response.choices[0].message.content
@@ -31,6 +49,46 @@ class InteractiveIdeaJamToPrototypeCrew:
                     # Remove number and punctuation
                     idea = line.strip().split(".", 1)[-1].strip()
                     ideas.append(idea)
+            # If not enough ideas, re-prompt for missing ones
+            retry_count = 0
+            max_retries = 5
+            while len(ideas) < num_ideas and retry_count < max_retries:
+                missing = num_ideas - len(ideas)
+                print(f"\n[Warning: Only {len(ideas)} ideas generated, requesting {missing} more to reach {num_ideas}] (Attempt {retry_count+1}/{max_retries})")
+                followup_prompt = (
+                    f"Continue the previous list. Generate {missing} more unique ideas for the topic: '{topic}'. "
+                    f"Number them from {len(ideas)+1} to {num_ideas}. For each idea, give a one-sentence summary."
+                )
+                followup_response = self.client.chat.completions.create(
+                    model=self.model,
+                    messages=[{"role": "system", "content": "You are a helpful creative assistant."},
+                             {"role": "user", "content": followup_prompt}],
+                    max_tokens=1024,
+                    temperature=0.9
+                )
+                followup_text = followup_response.choices[0].message.content
+                new_ideas = []
+                for line in followup_text.split("\n"):
+                    if line.strip() and (line.strip()[0].isdigit() and line.strip()[1] in ".)"):
+                        idx = int(line.strip().split(".", 1)[0])
+                        if idx > len(ideas) and idx <= num_ideas:
+                            idea = line.strip().split(".", 1)[-1].strip()
+                            new_ideas.append((idx, idea))
+                if not new_ideas:
+                    print("[Error: No new ideas generated in follow-up. Stopping retries.]")
+                    break
+                # Sort and append new ideas by their number
+                new_ideas.sort()
+                for idx, idea in new_ideas:
+                    if len(ideas) < idx-1:
+                        # Fill any skipped numbers with a placeholder
+                        for _ in range(len(ideas), idx-1):
+                            ideas.append("[Placeholder: Idea missing]")
+                    ideas.append(idea)
+                ideas = ideas[:num_ideas]  # Truncate if somehow too many
+                retry_count += 1
+            if len(ideas) < num_ideas:
+                print(f"\n[Warning: Only {len(ideas)} unique ideas could be generated after {retry_count} retries.]")
             if not ideas:
                 return f"IDEAS:\n{ideas_text}\n\n[Could not extract ideas for selection]"
             # Show ideas and prompt for selection
@@ -64,7 +122,7 @@ class InteractiveIdeaJamToPrototypeCrew:
                     from crew.critic import GPTCriticCrew
                     critique = GPTCriticCrew().run([chosen_idea, prototype])
                     from crew.interactive_loop import PostCritiqueInteractiveLoop
-                    return PostCritiqueInteractiveLoop(chosen_idea, prototype, critique.split("CRITIQUE:\n", 1)[-1] if "CRITIQUE:" in critique else critique, last_topic=user_input).run()
+                    return PostCritiqueInteractiveLoop(chosen_idea, prototype, critique.split("CRITIQUE:\n", 1)[-1] if "CRITIQUE:" in critique else critique, last_topic=topic).run()
                 elif choice == "restart":
                     print("\nRestarting from the beginning...\n")
                     from crew import build_crew
@@ -81,6 +139,6 @@ class InteractiveIdeaJamToPrototypeCrew:
                     from crew.critic import GPTCriticCrew
                     critique = GPTCriticCrew().run([chosen_idea, reiteration])
                     from crew.interactive_loop import PostCritiqueInteractiveLoop
-                    return PostCritiqueInteractiveLoop(chosen_idea, reiteration, critique.split("CRITIQUE:\n", 1)[-1] if "CRITIQUE:" in critique else critique, last_topic=user_input).run()
+                    return PostCritiqueInteractiveLoop(chosen_idea, reiteration, critique.split("CRITIQUE:\n", 1)[-1] if "CRITIQUE:" in critique else critique, last_topic=topic).run()
         except Exception as e:
             return f"[Error generating ideas: {e}]"
