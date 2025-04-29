@@ -49,8 +49,10 @@ This roadmap outlines a potential path. Tasks can be moved between phases based 
     * `[x]` After prototyping, allow user to pick which prototype to send to critique, add feedback, or restart (pattern reusable for all steps).
 * `[x]` **Implement `PrototypeAgent` (Basic):**
     * `[x]` Generate a simple text description based on a selected idea. (GPT-4o-mini powered, working)
-* `[ ]` **Implement `CriticAgent` (Basic):**
-    * `[ ]` Provide simple positive/negative feedback on the prototype description.
+* `[x]` **Implement `CriticAgent` (Basic):**
+    * `[x]` Provide exceptionally constructive, actionable positive/negative feedback and concrete suggestions on the prototype description.
+* `[ ]` **Add Post-Critique Interactive Loop:**
+    * `[ ]` After critique, let the user choose to iterate, pick a new idea/prototype, restart, or exit—never get stuck at the end.
 * `[ ]` **Define Basic `Tasks`:** Create corresponding CrewAI tasks for the above agents.
 * `[ ]` **Implement Sequential Workflow:** Enable basic chaining like `modes=[idea_jam → prototype → critic]`.
 * `[ ]` Handle basic user input for the initial topic/prompt.

@@ -133,17 +133,20 @@ class GPTCriticCrew:
     def run(self, idea_and_proto):
         idea, prototype = idea_and_proto
         prompt = (
-            f"You are a constructive critic. Here is an idea: '{idea}'. "
+            f"You are an exceptionally constructive, actionable, and supportive critic. "
+            f"Here is an idea: '{idea}'.\n"
             f"Here is its prototype: '{prototype}'.\n"
-            "Give concise positive and negative feedback on the prototype.\n"
-            "Format as: Positive: ... Negative: ..."
+            "Your job is to help the creator iterate forward most productively towards an amazing final product.\n"
+            "Give concise, specific, and actionable positive and negative feedback on the prototype.\n"
+            "For each negative point, suggest a concrete way to address or improve it.\n"
+            "Format as: Positive: ... Negative: ... Suggestions: ..."
         )
         try:
             response = self.client.chat.completions.create(
                 model=self.model,
-                messages=[{"role": "system", "content": "You are a helpful critic."},
+                messages=[{"role": "system", "content": "You are a helpful, constructive critic."},
                          {"role": "user", "content": prompt}],
-                max_tokens=200,
+                max_tokens=350,
                 temperature=0.7
             )
             return f"PROTOTYPE:\n{prototype}\n\nCRITIQUE:\n{response.choices[0].message.content}"
