@@ -90,9 +90,9 @@ This roadmap outlines a potential path. Tasks can be moved between phases based 
 *Goal: Flesh out the core MVP modes with the specific features defined in the original instructions.*
 
 * `[ ]` **`IdeaJamAgent` Enhancements:**
-    * `[ ]` Control number of ideas generated (use default, allow override).
-    * `[ ]` Implement variation factors (technology, business model, whimsy scale).
-    * `[ ]` Add 3-cluster summary output.
+    * `[x]` Control number of ideas generated (use default, allow override).
+    * `[x]` Implement variation factors (technology, business model, whimsy scale).
+    * `[x]` Add 3-cluster summary output.
 * `[ ]` **`PrototypeAgent` Enhancements:**
     * `[ ]` Implement specific output formats (UI layout description, code skeleton + TODOs).
     * `[ ]` Add 1-sentence hand-off link suggestion.
