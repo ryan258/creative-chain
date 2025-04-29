@@ -14,6 +14,25 @@ To create an AI-powered partner using **CrewAI** that streamlines the **Solo Inn
 * **Solo Creator Focus:** Keep the end-user (a solo innovator) in mind for usability and features.
 * **Honest Feedback Loop:** Ensure the `critic` and `reiterate` modes provide genuine value for improvement.
 
+## Progress Update (as of April 29, 2025)
+
+### What We've Done
+
+- [x] **IdeaJamAgent (Basic):** Generates creative ideas from a topic using GPT-4o-mini.
+- [x] **Interactive Step Selection:** After each step, user can pick next action (prototyping, critique, feedback, restart).
+- [x] **PrototypeAgent (Basic):** Produces concise prototype descriptions from chosen ideas.
+- [x] **CriticAgent (Basic):** Gives actionable, constructive feedback on prototypes.
+- [x] **Post-Critique Interactive Loop:** After critique, user can reiterate, re-critique, pick a new idea, restart, exit, or now **save** as a project brief.
+- [x] **VaultAgent (Stub):** Added `save` option to archive idea/prototype/critique as a creative project brief for handoff to a team.
+- [x] **Minimal Typing Experience:** All steps designed for hands-free/low-typing, menu-driven interaction.
+- [x] **Exit Only on Explicit Command:** Program only exits if user types 'exit'.
+
+### Where We Are At
+
+- The core interactive workflow is implemented and stable for continuous creative iteration.
+- User can now archive their best ideas and iterations at any time for future development.
+- The system is ready for further enhancements, especially around persistence, richer Vault features, and more advanced agent behaviors.
+
 ## Development Phases
 
 This roadmap outlines a potential path. Tasks can be moved between phases based on priority and dependencies. Status indicators:

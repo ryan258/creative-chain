@@ -105,25 +105,27 @@ class InteractivePrototypeToCriticCrew:
             print("  <your feedback> - Enter your own feedback to generate a reiteration")
             print("  <blank> - Show the list of ideas again to pick a different one")
             print("  restart - Restart the workflow from the beginning (idea jam mode)")
-            choice = input("\nWhat would you like to do? (y/feedback/blank/restart): ").strip()
-            if choice.lower() == "y":
-                return GPTCriticCrew().run([idea, prototype])
-            elif choice.lower() == "restart":
+            print("  exit    - Exit the program")
+            choice = input("\nWhat would you like to do? (y/feedback/blank/restart/exit): ").strip().lower()
+            if choice == "exit":
+                print("\nExiting. Have a creative day!")
+                exit(0)
+            elif choice == "y":
+                critique = GPTCriticCrew().run([idea, prototype])
+                # Always enter the post-critique loop after any critique
+                return PostCritiqueInteractiveLoop(idea, prototype, critique.split("CRITIQUE:\n", 1)[-1] if "CRITIQUE:" in critique else critique).run()
+            elif choice == "restart":
                 print("\nRestarting from the beginning...\n")
                 return build_crew("idea_jam").run(input("Enter your new creative prompt: "))
             elif choice == "":
                 print("\nReturning to idea selection...")
                 return build_crew("idea_jam").run(input("Enter your creative prompt again (or press Enter to reuse previous): "))
             else:
-                # Treat input as user feedback and generate a reiteration
                 reiteration = GPTReiterateCrew().run([prototype, choice])
                 print("\nREITERATION (based on your feedback):\n" + reiteration)
-                # Ask if user wants to send this to the critic
-                send_reiter = input("\nSend this reiteration to the critic? (y/N): ").strip().lower()
-                if send_reiter == "y":
-                    return GPTCriticCrew().run([idea, reiteration])
-                else:
-                    prototype = reiteration  # allow further feedback loop
+                # Immediately send reiteration to critic and enter post-critique loop
+                critique = GPTCriticCrew().run([idea, reiteration])
+                return PostCritiqueInteractiveLoop(idea, reiteration, critique.split("CRITIQUE:\n", 1)[-1] if "CRITIQUE:" in critique else critique).run()
 
 class GPTCriticCrew:
     def __init__(self):
@@ -176,6 +178,55 @@ class GPTReiterateCrew:
             return response.choices[0].message.content
         except Exception as e:
             return f"[Error generating reiteration: {e}]"
+
+class PostCritiqueInteractiveLoop:
+    def __init__(self, idea, prototype, critique):
+        self.idea = idea
+        self.prototype = prototype
+        self.critique = critique
+
+    def run(self):
+        while True:
+            print("\nPROTOTYPE:\n" + self.prototype)
+            print("\nCRITIQUE:\n" + self.critique)
+            print("\nWhat would you like to do next?")
+            print("  reiterate - Improve this prototype (using your feedback or the critique)")
+            print("  critic    - Get another critique on the current prototype")
+            print("  pick      - Pick a new idea/prototype")
+            print("  restart   - Restart the workflow from the beginning (idea jam mode)")
+            print("  save      - Save this idea/prototype as a creative project brief for development")
+            print("  exit      - Exit the program")
+            choice = input("\nChoose: (reiterate/critic/pick/restart/save/exit): ").strip().lower()
+            if choice == "exit":
+                print("\nExiting. Have a creative day!")
+                exit(0)
+            elif choice == "reiterate":
+                feedback = input("\nEnter your feedback or press Enter to use the critique suggestions: ").strip()
+                if not feedback:
+                    feedback = self.critique
+                reiteration = GPTReiterateCrew().run([self.prototype, feedback])
+                print("\nREITERATION (based on feedback):\n" + reiteration)
+                self.prototype = reiteration
+                # After reiteration, always offer the same options again
+            elif choice == "critic":
+                new_critique = GPTCriticCrew().run([self.idea, self.prototype])
+                self.critique = new_critique.split("CRITIQUE:\n", 1)[-1] if "CRITIQUE:" in new_critique else new_critique
+                # After critique, always offer the same options again
+            elif choice == "pick":
+                print("\nReturning to idea selection...")
+                return build_crew("idea_jam").run(input("Enter your creative prompt again (or press Enter to reuse previous): "))
+            elif choice == "restart":
+                print("\nRestarting from the beginning...\n")
+                return build_crew("idea_jam").run(input("Enter your new creative prompt: "))
+            elif choice == "save":
+                from agents import VaultAgent
+                vault = VaultAgent()
+                brief = f"PROJECT BRIEF\nIdea: {self.idea}\nPrototype: {self.prototype}\nCritique: {self.critique}"
+                archive_result = vault.archive(brief)
+                print(f"\nSaved to Vault: {archive_result}\n")
+                # After saving, continue loop
+            else:
+                print("\nInvalid choice. Please select one of: reiterate, critic, pick, restart, save, exit.")
 
 def get_mode_from_input(user_input):
     # TODO: Parse mode from user input string
