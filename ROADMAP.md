@@ -42,10 +42,13 @@ This roadmap outlines a potential path. Tasks can be moved between phases based 
 
 *Goal: Implement a minimal viable loop for idea generation, prototyping, and critique.*
 
-* `[ ]` **Implement `IdeaJamAgent` (Basic):**
-    * `[ ]` Generate a fixed number of ideas based on a topic.
-* `[ ]` **Implement `PrototypeAgent` (Basic):**
-    * `[ ]` Generate a simple text description based on a selected idea.
+* `[x]` **Implement `IdeaJamAgent` (Basic):**
+    * `[x]` Generate a fixed number of ideas based on a topic. (GPT-4o-mini powered, working)
+* `[x]` **Add Interactive Selection Between Steps:**
+    * `[x]` After idea generation, allow user to pick which idea to prototype ("man in the middle" pattern).
+    * `[x]` After prototyping, allow user to pick which prototype to send to critique, add feedback, or restart (pattern reusable for all steps).
+* `[x]` **Implement `PrototypeAgent` (Basic):**
+    * `[x]` Generate a simple text description based on a selected idea. (GPT-4o-mini powered, working)
 * `[ ]` **Implement `CriticAgent` (Basic):**
     * `[ ]` Provide simple positive/negative feedback on the prototype description.
 * `[ ]` **Define Basic `Tasks`:** Create corresponding CrewAI tasks for the above agents.
