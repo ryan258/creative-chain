@@ -33,6 +33,13 @@ To create an AI-powered partner using **CrewAI** that streamlines the **Solo Inn
 - User can now archive their best ideas and iterations at any time for future development.
 - The system is ready for further enhancements, especially around persistence, richer Vault features, and more advanced agent behaviors.
 
+## Recent Progress (April 29, 2025)
+
+- Project briefs now saved as markdown in /ideas
+- Menu options now numbered and selectable by number or word
+- HAPPYPATH.md created for easy workflow testing
+- .gitignore updated to exclude /ideas/*.md
+
 ## Development Phases
 
 This roadmap outlines a potential path. Tasks can be moved between phases based on priority and dependencies. Status indicators:
@@ -46,14 +53,14 @@ This roadmap outlines a potential path. Tasks can be moved between phases based 
 
 *Goal: Establish the basic project structure, environment, and core CrewAI setup.*
 
-* `[ ]` Initialize GitHub repository with `README.md`, `LICENSE`, `.gitignore`.
-* `[ ]` Set up Python virtual environment (using `venv` or `uv`).
-* `[ ]` Install core dependencies (`crewai`, LLM provider library, `python-dotenv`). Manage with `requirements.txt`.
-* `[ ]` Configure `.env` for API keys (LLM provider minimum).
-* `[ ]` Create basic project structure (`main.py`, `crew.py`, potentially `agents.yaml`/`tasks.yaml` if using config files).
+* `[x]` Initialize GitHub repository with `README.md`, `.gitignore`.
+* `[x]` Set up Python virtual environment (using `venv`).
+* `[x]` Install core dependencies (`crewai`, LLM provider library, `python-dotenv`). Manage with `requirements.txt`.
+* `[x]` Configure `.env` for API keys (LLM provider minimum).
+* `[x]` Create basic project structure (`main.py`, `crew.py`, potentially `agents.yaml`/`tasks.yaml` if using config files).
 * `[ ]` Implement basic LLM connection test within CrewAI.
 * `[ ]` Define placeholder `Agent` structures in code or YAML (roles, goals, backstories).
-* `[ ]` Implement rudimentary mode selection logic (e.g., parse `mode=` from input in `main.py` or entry script).
+* `[x]` Implement rudimentary mode selection logic (e.g., parse `mode=` from input in `main.py` or entry script).
 
 ---
 
@@ -103,6 +110,11 @@ This roadmap outlines a potential path. Tasks can be moved between phases based 
     * `[ ]` Add the crucial pause step after `reiterate` runs.
     * `[ ]` Prompt user: "✅ Approve this iteration draft? (yes / no / edit first)".
     * `[ ]` Handle user response (proceed, stop, or apply edits before re-prompting).
+* `[ ]` **Add more accessibility features (voice input, larger text, etc.)**
+* `[ ]` **Improve error handling for idea extraction and selection**
+* `[ ]` **Add more robust filename sanitization for markdown briefs**
+* `[ ]` **Enable export/import of project briefs**
+* `[ ]` **Add search/filter for saved ideas in /ideas**
 
 ---
 

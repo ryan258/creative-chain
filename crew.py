@@ -190,43 +190,52 @@ class PostCritiqueInteractiveLoop:
             print("\nPROTOTYPE:\n" + self.prototype)
             print("\nCRITIQUE:\n" + self.critique)
             print("\nWhat would you like to do next?")
-            print("  reiterate - Improve this prototype (using your feedback or the critique)")
-            print("  critic    - Get another critique on the current prototype")
-            print("  pick      - Pick a new idea/prototype")
-            print("  restart   - Restart the workflow from the beginning (idea jam mode)")
-            print("  save      - Save this idea/prototype as a creative project brief for development")
-            print("  exit      - Exit the program")
-            choice = input("\nChoose: (reiterate/critic/pick/restart/save/exit): ").strip().lower()
-            if choice == "exit":
-                print("\nExiting. Have a creative day!")
-                exit(0)
-            elif choice == "reiterate":
+            print("  1. reiterate - Improve this prototype (using your feedback or the critique)")
+            print("  2. critic    - Get another critique on the current prototype")
+            print("  3. pick      - Pick a new idea/prototype")
+            print("  4. restart   - Restart the workflow from the beginning (idea jam mode)")
+            print("  5. save      - Save this idea/prototype as a creative project brief for development")
+            print("  6. exit      - Exit the program")
+            choice = input("\nChoose: (1/2/3/4/5/6 or reiterate/critic/pick/restart/save/exit): ").strip().lower()
+            if choice in ["1", "reiterate"]:
                 feedback = input("\nEnter your feedback or press Enter to use the critique suggestions: ").strip()
                 if not feedback:
                     feedback = self.critique
                 reiteration = GPTReiterateCrew().run([self.prototype, feedback])
                 print("\nREITERATION (based on feedback):\n" + reiteration)
                 self.prototype = reiteration
-                # After reiteration, always offer the same options again
-            elif choice == "critic":
+            elif choice in ["2", "critic"]:
                 new_critique = GPTCriticCrew().run([self.idea, self.prototype])
                 self.critique = new_critique.split("CRITIQUE:\n", 1)[-1] if "CRITIQUE:" in new_critique else new_critique
-                # After critique, always offer the same options again
-            elif choice == "pick":
+            elif choice in ["3", "pick"]:
                 print("\nReturning to idea selection...")
                 return build_crew("idea_jam").run(input("Enter your creative prompt again (or press Enter to reuse previous): "))
-            elif choice == "restart":
+            elif choice in ["4", "restart"]:
                 print("\nRestarting from the beginning...\n")
                 return build_crew("idea_jam").run(input("Enter your new creative prompt: "))
-            elif choice == "save":
+            elif choice in ["5", "save"]:
                 from agents import VaultAgent
+                import os
+                import re
                 vault = VaultAgent()
-                brief = f"PROJECT BRIEF\nIdea: {self.idea}\nPrototype: {self.prototype}\nCritique: {self.critique}"
+                brief = f"# PROJECT BRIEF\n\n**Idea:** {self.idea}\n\n**Prototype:** {self.prototype}\n\n**Critique:** {self.critique}"
                 archive_result = vault.archive(brief)
-                print(f"\nSaved to Vault: {archive_result}\n")
-                # After saving, continue loop
+                os.makedirs("ideas", exist_ok=True)
+                title_match = re.search(r"\*\*(.*?)\*\*", self.idea)
+                if title_match:
+                    base_title = title_match.group(1).strip().replace(" ", "_")
+                else:
+                    import datetime
+                    base_title = f"idea_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}"
+                filename = f"ideas/{base_title}.md"
+                with open(filename, "w", encoding="utf-8") as f:
+                    f.write(brief)
+                print(f"\nSaved to Vault: {archive_result}\nSaved as markdown: {filename}\n")
+            elif choice in ["6", "exit"]:
+                print("\nExiting. Have a creative day!")
+                exit(0)
             else:
-                print("\nInvalid choice. Please select one of: reiterate, critic, pick, restart, save, exit.")
+                print("\nInvalid choice. Please select one of: 1/2/3/4/5/6 or reiterate, critic, pick, restart, save, exit.")
 
 def get_mode_from_input(user_input):
     # TODO: Parse mode from user input string
