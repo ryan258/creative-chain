@@ -101,7 +101,6 @@ This roadmap outlines a potential path. Tasks can be moved between phases based 
     * `[x]` Aggregate and summarize multi-critic feedback for reiteration (hands-off, auto-summarized, summary shown to user).
 * `[ ]` **`PrototypeAgent` Enhancements:**
     * `[ ]` Implement specific output formats (UI layout description, code skeleton + TODOs).
-    * `[ ]` Add 1-sentence hand-off link suggestion.
 * `[x]` **Implement `ReiterateAgent` (Core):**
     * `[x]` Basic capability to receive artifact + critique and generate a new version (now uses multi-critic summary).
 

@@ -18,7 +18,7 @@ class GPTPrototypeCrew:
                 model=self.model,
                 messages=[{"role": "system", "content": "You are a helpful prototyping assistant."},
                          {"role": "user", "content": prompt}],
-                max_tokens=300,
+                max_tokens=900,
                 temperature=0.8
             )
             return response.choices[0].message.content
