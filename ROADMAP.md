@@ -89,32 +89,28 @@ This roadmap outlines a potential path. Tasks can be moved between phases based 
 
 *Goal: Flesh out the core MVP modes with the specific features defined in the original instructions.*
 
-* `[ ]` **`IdeaJamAgent` Enhancements:**
+* `[x]` **`IdeaJamAgent` Enhancements:**
     * `[x]` Control number of ideas generated (use default, allow override).
     * `[x]` Implement variation factors (technology, business model, whimsy scale).
     * `[x]` Add 3-cluster summary output.
+* `[x]` **`CriticAgent` Enhancements:**
+    * `[x]` Implement detailed feedback structure (regressions, neutral shifts, improvements).
+    * `[x]` Generate ± delta table (usability, load_time, accessibility - placeholders for now).
+    * `[x]` Implement STOPLIGHT verdict (GREEN/YELLOW/RED).
+    * `[x]` Add support for multiple critics (`critics=X`, now always 3 by default).
+    * `[x]` Aggregate and summarize multi-critic feedback for reiteration (hands-off, auto-summarized, summary shown to user).
 * `[ ]` **`PrototypeAgent` Enhancements:**
     * `[ ]` Implement specific output formats (UI layout description, code skeleton + TODOs).
     * `[ ]` Add 1-sentence hand-off link suggestion.
-* `[ ]` **`CriticAgent` Enhancements:**
-    * `[ ]` Implement detailed feedback structure (regressions, neutral shifts, improvements).
-    * `[ ]` Generate `± delta table` (usability, load_time, accessibility - placeholders for now).
-    * `[ ]` Implement STOPLIGHT verdict (GREEN/YELLOW/RED).
-    * `[ ]` Add support for multiple critics (`critics=X`).
-    * `[ ]` Add support for personas (`persona=target_audience|wildcard`).
-* `[ ]` **Implement `ReiterateAgent` (Core):**
-    * `[ ]` Basic capability to receive artifact + critique and generate a new version.
-    * `[ ]` Implement before/after delta table.
-    * `[ ]` Implement logic for stating which critiques were ignored and why.
-* `[ ]` **Implement Reiterate Approval Workflow:**
-    * `[ ]` Add the crucial pause step after `reiterate` runs.
-    * `[ ]` Prompt user: "✅ Approve this iteration draft? (yes / no / edit first)".
-    * `[ ]` Handle user response (proceed, stop, or apply edits before re-prompting).
-* `[ ]` **Add more accessibility features (voice input, larger text, etc.)**
-* `[ ]` **Improve error handling for idea extraction and selection**
-* `[ ]` **Add more robust filename sanitization for markdown briefs**
-* `[ ]` **Enable export/import of project briefs**
-* `[ ]` **Add search/filter for saved ideas in /ideas**
+* `[x]` **Implement `ReiterateAgent` (Core):**
+    * `[x]` Basic capability to receive artifact + critique and generate a new version (now uses multi-critic summary).
+
+---
+
+**Current Status:**
+- The workflow supports accessible, hands-off ideation, prototyping, and critique with multi-perspective, summarized feedback.
+- You are here: **CriticAgent Enhancements (multi-critic, summary, and transparency complete).**
+- Next up: PrototypeAgent output format improvements or additional features as prioritized.
 
 ---
 
