@@ -24,14 +24,40 @@ class PostCritiqueInteractiveLoop:
             print("  6. exit      - Exit the program")
             choice = input("\nChoose: (1/2/3/4/5/6 or reiterate/critic/pick/restart/save/exit): ").strip().lower()
             if choice in ["1", "reiterate"]:
-                feedback = input("\nEnter your feedback or press Enter to use the critique suggestions: ").strip()
+                feedback = input("\nEnter your feedback for reiteration (or leave blank to use the last critique): ").strip()
                 if not feedback:
-                    feedback = self.critique
+                    import re
+                    critics = re.split(r'CRITIC \d+ RESPONSE:', self.critique)
+                    critics = [c.strip() for c in critics if c.strip()]
+                    if len(critics) > 1:
+                        # Summarize all critics' feedback using the LLM
+                        from crew.reiterate import GPTReiterateCrew
+                        summary_prompt = (
+                            "You are an expert at synthesizing creative feedback. "
+                            "Below are multiple independent critiques of a creative prototype. "
+                            "Summarize the main points of agreement, disagreement, and the most actionable suggestions, in a concise and clear way. "
+                            "CRITIQUES:\n" + '\n---\n'.join(critics)
+                        )
+                        from openai import OpenAI
+                        import os
+                        client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+                        summary_response = client.chat.completions.create(
+                            model=os.getenv("OPENAI_MODEL_NAME", "gpt-4o-mini"),
+                            messages=[{"role": "system", "content": "You are a helpful creative feedback synthesizer."},
+                                     {"role": "user", "content": summary_prompt}],
+                            max_tokens=350,
+                            temperature=0.6
+                        )
+                        feedback = summary_response.choices[0].message.content
+                        print("\n--- SUMMARY OF ALL CRITICS ---\n" + feedback + "\n------------------------------")
+                    else:
+                        feedback = self.critique
                 reiteration = GPTReiterateCrew().run([self.prototype, feedback])
                 print("\nREITERATION (based on feedback):\n" + reiteration)
                 self.prototype = reiteration
             elif choice in ["2", "critic"]:
-                new_critique = GPTCriticCrew().run([self.idea, self.prototype])
+                # Always use 3 critics by default, no prompt
+                new_critique = GPTCriticCrew(critics=3).run([self.idea, self.prototype])
                 self.critique = new_critique.split("CRITIQUE:\n", 1)[-1] if "CRITIQUE:" in new_critique else new_critique
             elif choice in ["3", "pick"]:
                 print("\nReturning to idea selection...")
