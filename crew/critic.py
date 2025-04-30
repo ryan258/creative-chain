@@ -46,14 +46,10 @@ class GPTCriticCrew:
                 f"Here is its prototype: '{prototype}'.\n"
                 "Your job is to help the creator iterate forward most productively towards an amazing final product.\n"
                 "Give concise, specific, and actionable feedback in the following structure:\n"
-                "\nPOSITIVE: (What works well)\nNEGATIVE: (What needs improvement)\nSUGGESTIONS: (Concrete ways to improve negatives)\n"
-                "\nNow, analyze the prototype for: regressions (what got worse), neutral shifts (changes that neither improved nor worsened), and improvements (what got better).\n"
-                "List each under REGRESSIONS, NEUTRAL SHIFTS, and IMPROVEMENTS.\n"
-                "\nProvide a STOPLIGHT VERDICT (GREEN/YELLOW/RED) for overall quality and readiness.\n"
-                "\nCreate a DELTA TABLE with these columns: Aspect | +Delta (improved) | -Delta (regressed) | Neutral.\n"
-                "Aspects: usability, load_time, accessibility. Use placeholder values if unsure.\n"
-                "\nFormat the output as:\n"
-                "POSITIVE: ...\nNEGATIVE: ...\nSUGGESTIONS: ...\n\nREGRESSIONS: ...\nNEUTRAL SHIFTS: ...\nIMPROVEMENTS: ...\n\nSTOPLIGHT VERDICT: ...\n\nDELTA TABLE:\n| Aspect       | +Delta | -Delta | Neutral |\n|--------------|--------|--------|---------|\n| usability    |   ?    |   ?    |    ?    |\n| load_time    |   ?    |   ?    |    ?    |\n| accessibility|   ?    |   ?    |    ?    |"
+                "POSITIVE: (What works well)\nNEGATIVE: (What needs improvement)\nSUGGESTIONS: (Concrete ways to improve negatives)\n"
+                "REGRESSIONS: (What got worse, if anything)\nNEUTRAL SHIFTS: (Changes that neither improved nor worsened)\nIMPROVEMENTS: (What got better)\n"
+                "STOPLIGHT VERDICT (GREEN/YELLOW/RED): (Overall quality and readiness)\n"
+                "(Keep your response as brief and targeted as possible. Do not include tables, boilerplate, or filler text. Only provide content that is directly actionable or insightful for the next iteration.)"
             )
             try:
                 response = self.client.chat.completions.create(
