@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Choose Variation Factors</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <style>
+      .slider-label { display:block; margin-top:20px; margin-bottom:8px; font-weight:600; color:#2a7be4; }
+      .slider-value { font-size:1.1em; margin-left:10px; }
+      .slider { width: 80%; }
+      .fade-out { opacity: 0; transition: opacity 0.5s; pointer-events: none; }
+      .fade-in { opacity: 1; transition: opacity 0.5s; }
+      #results { opacity: 0; }
+    </style>
+    <script>
+      function randomizeSliders() {
+        document.getElementById('technology').value = Math.floor(Math.random()*11);
+        document.getElementById('business').value = Math.floor(Math.random()*11);
+        document.getElementById('fantasy').value = Math.floor(Math.random()*11);
+        updateValues();
+        submitVariationForm();
+      }
+      function updateValues() {
+        document.getElementById('tech_val').innerText = document.getElementById('technology').value;
+        document.getElementById('biz_val').innerText = document.getElementById('business').value;
+        document.getElementById('fantasy_val').innerText = document.getElementById('fantasy').value;
+      }
+      function attachVariationFormHandler() {
+        const form = document.getElementById('variationForm');
+        if (form) {
+          form.onsubmit = function(e) {
+            e.preventDefault();
+            submitVariationForm();
+          };
+        }
+      }
+      function submitVariationForm() {
+        var form = document.getElementById('variationForm');
+        var formData = new FormData(form);
+        document.querySelector('.container').classList.add('fade-out');
+        fetch('/variation_factors', {
+          method: 'POST',
+          body: formData,
+          headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(response => response.text())
+        .then(html => {
+          console.log('[AJAX] Received HTML:', html);
+          document.querySelector('.container').outerHTML = html;
+          setTimeout(() => {
+            const newContainer = document.querySelector('.container');
+            if (newContainer) {
+              newContainer.classList.add('fade-in');
+              console.log('[AJAX] Fade-in applied to new container.');
+              console.log('[AJAX] New container innerHTML:', newContainer.innerHTML);
+              // Re-attach handlers for next AJAX round
+              attachVariationFormHandler();
+              attachPickIdeaHandler();
+            } else {
+              console.error('[AJAX] No container found after HTML injection!');
+            }
+          }, 100);
+        })
+        .catch(err => {
+          console.error('[AJAX] Error during fetch or HTML injection:', err);
+        });
+        return false;
+      }
+      function attachPickIdeaHandler() {
+        window.pickIdea = function(idx) {
+          var chosen = document.getElementById('chosen_idea');
+          var form = document.getElementById('pickForm');
+          if (chosen && form) {
+            chosen.value = idx;
+            form.submit();
+          }
+        }
+      }
+      document.addEventListener('DOMContentLoaded', function() {
+        console.log('[INIT] variation_factors.js loaded');
+        updateValues();
+        attachVariationFormHandler();
+        attachPickIdeaHandler();
+      });
+    </script>
+</head>
+<body onload="updateValues()">
+    <div class="container">
+        <h2>Pick Variation Factors</h2>
+        <form id="variationForm" method="post" action="/variation_factors">
+            <label class="slider-label" for="technology">Technology: <span class="slider-value" id="tech_val">5</span></label>
+            <input type="range" min="0" max="10" value="5" class="slider" id="technology" name="technology" onchange="updateValues()">
+
+            <label class="slider-label" for="business">Business: <span class="slider-value" id="biz_val">5</span></label>
+            <input type="range" min="0" max="10" value="5" class="slider" id="business" name="business" onchange="updateValues()">
+
+            <label class="slider-label" for="fantasy">Fantasy: <span class="slider-value" id="fantasy_val">5</span></label>
+            <input type="range" min="0" max="10" value="5" class="slider" id="fantasy" name="fantasy" onchange="updateValues()">
+
+            <div style="margin-top:30px;">
+                <button type="submit" class="start-btn">Submit</button>
+                <button type="button" onclick="randomizeSliders()" class="mode-btn">🎲 Random</button>
+            </div>
+        </form>
+        <a href="/" class="back-btn">⬅️ Home</a>
+    </div>
+</body>
+</html>

@@ -3,3 +3,5 @@ crewai
 python-dotenv
 # Add your preferred LLM provider (e.g., openai, anthropic, groq)
 openai
+flask
+flask-cors

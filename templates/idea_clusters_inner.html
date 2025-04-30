@@ -1,0 +1,27 @@
+<div class="container fade-in">
+    <h2>Pick Your Favorite Idea</h2>
+    <form id="pickForm" method="post" action="/pick_idea">
+        <input type="hidden" name="choice" id="chosen_idea">
+        {% if ideas and ideas|length > 0 %}
+            <div class="idea-grid">
+                {% for idea in ideas %}
+                    <div class="idea-card" onclick="pickIdea({{ idea.idx }})">
+                        {{ idea.text }}
+                        {% if idea.cluster %}
+                            <div class="idea-footnote">({{ idea.cluster }})</div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div style="padding:30px; color:#e74c3c; font-size:1.2em;">No ideas found. Please try again or adjust your prompt.</div>
+        {% endif %}
+    </form>
+    <a href="/" class="back-btn">⬅️ Home</a>
+</div>
+<script>
+function pickIdea(idx) {
+    document.getElementById('chosen_idea').value = idx;
+    document.getElementById('pickForm').submit();
+}
+</script>

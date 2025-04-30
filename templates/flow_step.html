@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Creative Flow</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h2>{{ step_title }}</h2>
+        <div class="output-box">
+            {{ output|safe }}
+        </div>
+        <form method="post" action="{{ next_action }}">
+            {% if show_choices %}
+                {% for choice in choices %}
+                    <button type="submit" name="choice" value="{{ choice.value }}" class="mode-btn">{{ choice.label }}</button>
+                {% endfor %}
+            {% else %}
+                <button type="submit" class="start-btn">Continue</button>
+            {% endif %}
+        </form>
+        <a href="/" class="back-btn">⬅️ Home</a>
+    </div>
+</body>
+</html>

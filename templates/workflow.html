@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Creative Workflow</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Start Your Creative Flow!</h2>
+        <form method="post" action="/start_flow">
+            <input type="text" name="topic" placeholder="Enter your creative topic (e.g. windsurf sail)" class="input-box" required>
+            <label for="num_ideas" style="margin-left:10px; font-size:1em;">How many ideas?</label>
+            <input type="number" name="num_ideas" id="num_ideas" min="3" max="20" value="9" style="width:3em; margin-left:5px;">
+            <button type="submit" class="start-btn">🚀 Begin</button>
+        </form>
+    </div>
+</body>
+</html>
